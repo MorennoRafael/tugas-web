@@ -36,7 +36,10 @@
                         <button type="button" class="btn bg-gradient-success btn-block mb-3" data-bs-toggle="modal" data-bs-target="#modalCreate">
                             Tambah Data
                         </button>
+                        <a href="<?= base_url('table/table2b6/export') ?>" class="btn bg-gradient-success btn-block mb-3">
+    Export Excel </a>
                         <br>
+
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">

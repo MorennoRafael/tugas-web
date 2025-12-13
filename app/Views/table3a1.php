@@ -34,6 +34,7 @@
                         <button type="button" class="btn bg-gradient-success btn-block mb-3" data-bs-toggle="modal" data-bs-target="#modalCreate">
                             Tambah Data
                         </button>
+                        <a href="<?= base_url('table/table3a1/export') ?>" class="btn bg-gradient-success btn-block mb-3"> Import Excel </a>
                         <br>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">

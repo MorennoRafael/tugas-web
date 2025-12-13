@@ -4,6 +4,13 @@ namespace App\Controllers;
 
 use App\Models\DBtable2b6;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;  
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+
 class Table2b6 extends BaseController
 {
     public function index()
@@ -83,5 +90,100 @@ class Table2b6 extends BaseController
         $data['table2b6'] = $model->cariData($cariData);
 
         return view('table2b6', $data);
+    }
+
+    public function exportExcel()
+    {
+        $model = new DBtable2b6();
+        $data = $model->findAll();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // 1. SET HEADER & STYLING HEADER
+        $headers = ['No', 'Jenis Kemampuan', 'Sangat Baik', 'Baik', 'Cukup', 'Kurang', 'Rencana Tindak'];
+        $columnIndex = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($columnIndex . '1', $header);
+            $columnIndex++;
+        }
+
+        // Style Header (Background Biru, Teks Putih, Bold, Rata Tengah)
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+                'color' => ['argb' => Color::COLOR_WHITE], // Teks Putih
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF4F81BD'], // Biru Excel
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+        
+        // Terapkan style ke header (A1 sampai G1)
+        $sheet->getStyle('A1:G1')->applyFromArray($headerStyle);
+        // Atur tinggi baris header agar lebih lega
+        $sheet->getRowDimension('1')->setRowHeight(25);
+
+        // 2. ISI DATA (LOOPING)
+        $rowIndex = 2;
+        foreach ($data as $index => $row) {
+            $sheet->setCellValue('A' . $rowIndex, $index + 1);
+            $sheet->setCellValue('B' . $rowIndex, $row['jenis_kemampuan']);
+            $sheet->setCellValue('C' . $rowIndex, $row['sangat_baik']);
+            $sheet->setCellValue('D' . $rowIndex, $row['baik']);
+            $sheet->setCellValue('E' . $rowIndex, $row['cukup']);
+            $sheet->setCellValue('F' . $rowIndex, $row['kurang']);
+            $sheet->setCellValue('G' . $rowIndex, $row['rencana_tindak']);
+            $rowIndex++;
+        }
+
+        // 3. STYLING BODY / ISI TABEL
+        $lastRow = $rowIndex - 1; // Baris terakhir data
+
+        // Style Border untuk seluruh data
+        $styleBorder = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+            'alignment' => [
+                'vertical' => Alignment::VERTICAL_CENTER, // Teks di tengah secara vertikal
+            ],
+        ];
+        $sheet->getStyle('A2:G' . $lastRow)->applyFromArray($styleBorder);
+
+        // Style Alignment (Rata Tengah) Khusus Kolom Angka (No, Sangat Baik s/d Kurang)
+        // Kolom: A, C, D, E, F -> Center
+        $sheet->getStyle('A2:A' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C2:F' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        
+        // (Kolom B dan G biarkan rata kiri/default karena teks panjang)
+
+        // 4. AUTO SIZE COLUMN (Agar lebar kolom pas otomatis)
+        foreach (range('A', 'G') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // 5. DOWNLOAD FILE
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="table2b6.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 }
