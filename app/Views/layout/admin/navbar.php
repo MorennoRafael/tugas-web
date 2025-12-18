@@ -1,60 +1,116 @@
-<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
+<?php
+$segment1 = service('uri')->getSegment(1);
+$segment2 = service('uri')->getSegment(2);
+
+$tablesActive = ($segment1 == 'table' || $segment1 == 'users'); // Update agar menu tetap aktif saat buka users
+?>
+
+<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
+  id="sidenav-main">
   <div class="sidenav-header">
-    <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-    <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html " target="_blank">
+    <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+      aria-hidden="true" id="iconSidenav"></i>
+    <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html "
+      target="_blank">
       <img src="<?= base_url('img/logo-ct-dark.png') ?>" class="navbar-brand-img h-100" alt="main_logo">
       <span class="ms-1 font-weight-bold">Web Kelompok-9</span>
     </a>
   </div>
   <hr class="horizontal dark mt-0">
-  <div class="w-auto" id="sidenav-collapse-main ">
+  <div class="w-auto" id="sidenav-collapse-main">
     <ul class="navbar-nav bg-gray-100">
 
       <li class="nav-item">
         <a class="nav-link " href="<?= base_url('dashboard') ?>">
-          <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-shop text-primary text-sm opacity-10"></i>
           </div>
           <span class="nav-link-text ms-1">Dashboard</span>
         </a>
       </li>
 
-      <li class="nav-item" id="tablesDropdown">
-        <a class="nav-link" href="#">
-          <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+      <li class="nav-item <?= $tablesActive ? 'active' : '' ?>" id="tablesDropdown">
+        <a class="nav-link <?= $tablesActive ? 'active' : '' ?>" href="javascript:void(0);">
+          <div
+            class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
           </div>
           <span class="nav-link-text ms-1">Tables</span>
           <i class="fas fa-chevron-down ms-auto"></i>
         </a>
-        <ul class="dropdown-menu bg-gray-100" aria-labelledby="tablesDropdown">
-          <li><a class="dropdown-item" href="<?= base_url('table/table2b6') ?>">Tabel 2.b.6</a></li>
-          <li><a class="dropdown-item" href="<?= base_url('table/table2c') ?>">Tabel 2.c</a></li>
-          <li><a class="dropdown-item" href="<?= base_url('table/table2d') ?>">Tabel 2.d</a></li>
-          <li><a class="dropdown-item" href="<?= base_url('table/table3a1') ?>">Tabel 3.a.1</a></li>
+        <ul class="dropdown-menu show bg-gray-100 ms-4">
+
+          <li class="<?= ($segment2 == 'table2b6') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table2b6') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table2b6') ?>">
+              Tabel 2.b.6
+            </a>
+          </li>
+
+          <li class="<?= ($segment2 == 'table2c') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table2c') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table2c') ?>">
+              Tabel 2.c
+            </a>
+          </li>
+
+          <li class="<?= ($segment2 == 'table2d') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table2d') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table2d') ?>">
+              Tabel 2.d
+            </a>
+          </li>
+
+          <li class="<?= ($segment2 == 'table3a1') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table3a1') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table3a1') ?>">
+              Tabel 3.a.1
+            </a>
+          </li>
+          <?php if (session()->get('role') == 'admin'): ?>
+            <li class="<?= ($segment2 == 'users') ? 'bg-dark text-white rounded' : '' ?>">
+              <a class="dropdown-item text-sm <?= ($segment2 == 'users') ? 'text-white' : '' ?>"
+                href="<?= base_url('table/users') ?>">
+                User Management
+              </a>
+            </li>
+          <?php endif; ?>
         </ul>
       </li>
     </ul>
   </div>
+
   <div class="sidenav-footer">
     <hr class="horizontal dark mt-3">
     <div class="card card-plain shadow-none" id="sidenavCard">
-      <div class="card-body p-3 w-100 pt-0 d-flex ">
-        <a class="nav-link" href="<?= base_url('logout') ?>">
-          <div class="icon icon-shape icon-sm border-radius-md">
-            <i class="ni ni-ui-04 text-primary text-sm opacity-10"></i>
+      <div class="card-body p-3 w-100 pt-0">
+
+        <div class="d-flex align-items-center mb-3 p-2 border-radius-md bg-white shadow-sm">
+          <div
+            class="icon icon-shape icon-sm border-radius-md bg-gradient-primary text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="ni ni-single-02 text-white opacity-10"></i>
           </div>
-          <span class="nav-link-text">Logout</span>
+          <div class="ms-1">
+            <h6 class="text-sm font-weight-bold mb-0 text-dark">
+              <?= session()->get('username') ? session()->get('username') : 'Guest'; ?>
+            </h6>
+            <p class="text-xs text-secondary mb-0 text-uppercase font-weight-bolder">
+              <?= session()->get('role') ? session()->get('role') : '-'; ?>
+            </p>
+          </div>
+        </div>
+        <a class="nav-link btn btn-outline-primary btn-sm w-100 mb-0" href="<?= base_url('logout') ?>">
+          <i class="ni ni-user-run text-sm opacity-10 me-2"></i> Logout
         </a>
+
       </div>
     </div>
   </div>
 
-
-
   <script>
     // Handle dropdown toggle without using Bootstrap button
-    document.getElementById('tablesDropdown').addEventListener('click', function() {
+    document.getElementById('tablesDropdown').addEventListener('click', function () {
       const dropdownMenu = this.querySelector('.dropdown-menu');
       dropdownMenu.classList.toggle('show');
 
@@ -62,5 +118,4 @@
       chevronIcon.classList.toggle('fa-chevron-up');
     });
   </script>
-  </div>
 </aside>

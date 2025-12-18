@@ -6,7 +6,7 @@ use App\Models\DBtable2b6;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Border;  
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -23,6 +23,10 @@ class Table2b6 extends BaseController
 
     public function create()
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2b6'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $validation = \Config\Services::validation();
         $validation->setRules([
             'jenis_kemampuan' => 'required'
@@ -34,11 +38,11 @@ class Table2b6 extends BaseController
             $model = new DBtable2b6();
             $model->insert([
                 "jenis_kemampuan" => $this->request->getPost('jenis_kemampuan'),
-                "sangat_baik"     => $this->request->getPost('sangat_baik'),
-                "baik"            => $this->request->getPost('baik'),
-                "cukup"           => $this->request->getPost('cukup'),
-                "kurang"          => $this->request->getPost('kurang'),
-                "rencana_tindak"  => $this->request->getPost('rencana_tindak'),
+                "sangat_baik" => $this->request->getPost('sangat_baik'),
+                "baik" => $this->request->getPost('baik'),
+                "cukup" => $this->request->getPost('cukup'),
+                "kurang" => $this->request->getPost('kurang'),
+                "rencana_tindak" => $this->request->getPost('rencana_tindak'),
             ]);
 
             return redirect()->to('table/table2b6');
@@ -49,6 +53,10 @@ class Table2b6 extends BaseController
 
     public function edit($id)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2b6'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $model = new DBtable2b6();
         $data['table2b6'] = $model->where('id', $id)->first();
 
@@ -62,11 +70,11 @@ class Table2b6 extends BaseController
         if ($isDataValid) {
             $model->update($id, [
                 "jenis_kemampuan" => $this->request->getPost('jenis_kemampuan'),
-                "sangat_baik"     => $this->request->getPost('sangat_baik'),
-                "baik"            => $this->request->getPost('baik'),
-                "cukup"           => $this->request->getPost('cukup'),
-                "kurang"          => $this->request->getPost('kurang'),
-                "rencana_tindak"  => $this->request->getPost('rencana_tindak'),
+                "sangat_baik" => $this->request->getPost('sangat_baik'),
+                "baik" => $this->request->getPost('baik'),
+                "cukup" => $this->request->getPost('cukup'),
+                "kurang" => $this->request->getPost('kurang'),
+                "rencana_tindak" => $this->request->getPost('rencana_tindak'),
             ]);
 
             return redirect()->to('table/table2b6');
@@ -77,6 +85,10 @@ class Table2b6 extends BaseController
 
     public function delete($id)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2b6'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $model = new DBtable2b6();
         $model->delete($id);
         return redirect()->to('table/table2b6');
@@ -94,6 +106,10 @@ class Table2b6 extends BaseController
 
     public function exportExcel()
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2b6'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $model = new DBtable2b6();
         $data = $model->findAll();
 
@@ -129,7 +145,7 @@ class Table2b6 extends BaseController
                 ],
             ],
         ];
-        
+
         // Terapkan style ke header (A1 sampai G1)
         $sheet->getStyle('A1:G1')->applyFromArray($headerStyle);
         // Atur tinggi baris header agar lebih lega
@@ -169,7 +185,7 @@ class Table2b6 extends BaseController
         // Kolom: A, C, D, E, F -> Center
         $sheet->getStyle('A2:A' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('C2:F' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        
+
         // (Kolom B dan G biarkan rata kiri/default karena teks panjang)
 
         // 4. AUTO SIZE COLUMN (Agar lebar kolom pas otomatis)
@@ -178,8 +194,12 @@ class Table2b6 extends BaseController
         }
 
         // 5. DOWNLOAD FILE
+
+
+        $filename = 'Laporan-Table2b6-' . date('Y-m-d-His') . '.xlsx';
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="table2b6.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
 
         $writer = new Xlsx($spreadsheet);

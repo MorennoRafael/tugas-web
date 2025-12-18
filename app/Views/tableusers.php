@@ -1,24 +1,5 @@
 <?= $this->extend('layout/admin/layout') ?>
-
 <?= $this->section('content') ?>
-
-<?php if (session()->getFlashdata('error')): ?>
-    <div style="position: absolute; top: 2%; right: 2%; z-index: 10500;">
-        <div class="toast fade show p-2 bg-white shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header border-0">
-                <i class="ni ni-notification-70 text-danger me-2"></i>
-                <strong class="me-auto text-danger">Akses Ditolak!</strong>
-                <small class="text-body">Baru saja</small>
-                <button type="button" class="btn-close text-dark" data-bs-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="toast-body font-weight-bold">
-                <?= session()->getFlashdata('error'); ?>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
 
 <main class="main-content position-relative border-radius-lg ">
     <!-- Navbar -->
@@ -29,17 +10,19 @@
                 <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                     <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white" href="javascript:;">Pages</a>
                     </li>
-                    <li class="breadcrumb-item text-sm text-white active" aria-current="page">Tables</li>
+                    <li class="breadcrumb-item text-sm text-white active" aria-current="page">Users</li>
                 </ol>
-                <h3 class="font-weight-bolder text-white mb-0">Tables</h3>
+                <h3 class="font-weight-bolder text-white mb-0">Users</h3>
             </nav>
             <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                 <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                     <div class="input-group">
-                        <form action="<?= base_url('table/table2b6/cari') ?>" method="GET" id="searchForm">
-                            <span class="input-group-text text-body"><input type="search" id="searchInput" name="search"
-                                    placeholder="Cari berdasarkan keterangan.." /><i class="fas fa-search"
-                                    aria-hidden="true"></i></span>
+                        <form action="<?= base_url('users/cari') ?>" method="GET" id="searchForm">
+                            <span class="input-group-text text-body">
+                                <input type="search" id="searchInput" name="search"
+                                    placeholder="Cari berdasarkan username atau nama.." />
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                            </span>
                         </form>
                     </div>
                 </div>
@@ -47,62 +30,47 @@
         </div>
     </nav>
     <!-- End Navbar -->
+
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-header pb-0">
-                        <h5>Tabel 2.b.6</h5>
-                        <h6>Morenno Rafael 240611059</h6>
+                        <h5>Daftar Users</h5>
                         <!-- button tambah -->
-                        <?php if (session()->get('role') != 'staff'): ?>
-                            <button type="button" class="btn bg-gradient-success btn-block mb-3" data-bs-toggle="modal"
-                                data-bs-target="#modalCreate">
-                                Tambah Data
-                            </button>
-                        <?php endif; ?>
-                        <a href="<?= base_url('table/table2b6/export') ?>"
-                            class="btn bg-gradient-success btn-block mb-3">
-                            Export Excel </a>
+                        <button type="button" class="btn bg-gradient-success btn-block mb-3" data-bs-toggle="modal"
+                            data-bs-target="#modalCreateUser">
+                            Tambah User
+                        </button>
                         <br>
-
                     </div>
+
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
                             <table class="table table-hover align-items-center mb-0">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No</th>
-                                        <th class="text-center">Jenis Kemampuan</th>
-                                        <th class="text-center">Sangat Baik</th>
-                                        <th class="text-center">Baik</th>
-                                        <th class="text-center">Cukup</th>
-                                        <th class="text-center">Kurang</th>
-                                        <th class="text-center">Rencana Tindak</th>
+                                        <th class="text-center">Username</th>
+                                        <th class="text-center">Nama</th>
+                                        <th class="text-center">Role</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     <?php $no = 1;
-                                    foreach ($table2b6 as $row): ?>
+                                    foreach ($users as $user): ?>
                                         <tr>
                                             <td class="text-center"><?= $no ?></td>
-                                            <td class="text-center"><?= $row['jenis_kemampuan'] ?></td>
-                                            <td class="text-center"><?= $row['sangat_baik'] ?></td>
-                                            <td class="text-center"><?= $row['baik'] ?></td>
-                                            <td class="text-center"><?= $row['cukup'] ?></td>
-                                            <td class="text-center"><?= $row['kurang'] ?></td>
-                                            <td class="text-center"><?= $row['rencana_tindak'] ?></td>
-
+                                            <td class="text-center"><?= $user->username ?></td>
+                                            <td class="text-center"><?= $user->name ?></td>
+                                            <td class="text-center"><?= ucfirst($user->role) ?></td>
                                             <td class="text-center">
-                                                <a href="<?= base_url('table/table2b6/' . $row['id'] . '/edit') ?>"
-                                                    class="btn bg-gradient-info">
-                                                    Edit
-                                                </a>
+                                                <a href="<?= base_url('table/users/' . $user->username . '/edit') ?>"
+                                                    class="btn bg-gradient-info">Edit</a>
 
                                                 <a href="#"
-                                                    data-href="<?= base_url('table/table2b6/' . $row['id'] . '/delete') ?>"
+                                                    data-href="<?= base_url('table/users/' . $user->username . '/delete') ?>"
                                                     onclick="confirmToDelete(this)" class="btn bg-gradient-danger"
                                                     data-bs-toggle="modal" data-bs-target="#confirm-dialog">
                                                     Hapus
@@ -125,7 +93,7 @@
                                             <h5>Konfirmasi Hapus</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <div class="modal-body">Apakah Anda yakin ingin menghapus data ini?</div>
+                                        <div class="modal-body">Apakah Anda yakin ingin menghapus user ini?</div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Batal</button>
@@ -148,42 +116,39 @@
                                 }
                             </script>
 
-                            <!-- Modal Tambah -->
-                            <div class="modal fade" id="modalCreate" tabindex="-1">
+                            <!-- Modal Tambah User -->
+                            <div class="modal fade" id="modalCreateUser" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered modal-md">
                                     <div class="modal-content">
                                         <div class="modal-body p-0">
                                             <div class="card card-plain">
                                                 <div class="card-header pb-0">
-                                                    <h3 class="font-weight-bolder text-primary">Tambah Data</h3>
+                                                    <h3 class="font-weight-bolder text-primary">Tambah User</h3>
                                                 </div>
 
                                                 <div class="card-body pb-3">
-                                                    <form action="<?= base_url('table/table2b6/new') ?>" method="post">
+                                                    <form action="<?= base_url('table/users/new') ?>" method="post">
+                                                        <label>Username</label>
+                                                        <input type="text" class="form-control mb-3" name="username"
+                                                            required>
 
-                                                        <label>Jenis Kemampuan</label>
-                                                        <input type="text" class="form-control mb-3"
-                                                            name="jenis_kemampuan">
+                                                        <label>Password</label>
+                                                        <input type="password" class="form-control mb-3" name="password"
+                                                            required>
 
-                                                        <label>Sangat Baik</label>
-                                                        <input type="number" class="form-control mb-3"
-                                                            name="sangat_baik">
+                                                        <label>Nama</label>
+                                                        <input type="text" class="form-control mb-3" name="name"
+                                                            required>
 
-                                                        <label>Baik</label>
-                                                        <input type="number" class="form-control mb-3" name="baik">
-
-                                                        <label>Cukup</label>
-                                                        <input type="number" class="form-control mb-3" name="cukup">
-
-                                                        <label>Kurang</label>
-                                                        <input type="number" class="form-control mb-3" name="kurang">
-
-                                                        <label>Rencana Tindak</label>
-                                                        <input type="text" class="form-control mb-3"
-                                                            name="rencana_tindak">
+                                                        <label>Role</label>
+                                                        <select name="role" class="form-control mb-3" required>
+                                                            <option value="admin">Admin</option>
+                                                            <option value="staff">Staff</option>
+                                                            <option value="manajer">Manajer</option>
+                                                        </select>
 
                                                         <button type="submit"
-                                                            class="btn bg-gradient-primary w-100 mt-4">Tambah</button>
+                                                            class="btn btn-primary w-100">Tambah</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -191,14 +156,12 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
 </main>
-
-
-
 
 <body class="g-sidenav-show bg-primary">
     <div class="min-height-300 bg-gray-100 position-absolute w-100"></div>
@@ -217,9 +180,9 @@
 
                 tableBody.querySelectorAll("tr").forEach(function (row, index) {
                     const cells = row.querySelectorAll("td");
-                    const kategoriText = cells[1].textContent.toLowerCase();                    // Ubah sesuai dengan indeks kolom yang berisi kategori
+                    const textToSearch = (cells[1].textContent + cells[2].textContent).toLowerCase();
 
-                    if (kategoriText.includes(searchText)) {
+                    if (textToSearch.includes(searchText)) {
                         row.style.display = "";
                         foundRows++;
                     } else {
@@ -240,11 +203,9 @@
             });
 
             searchInput.addEventListener("input", filterRows);
-
             filterRows();
         });
     </script>
-
 </body>
 
 <?= $this->endSection() ?>

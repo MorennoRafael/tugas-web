@@ -1,32 +1,39 @@
 <?php
- 
+
 namespace App\Controllers;
- 
+
 use App\Models\UsersModel;
- 
+
 class Login extends BaseController
 {
     public function index()
     {
         return view('vw_login');
     }
- 
+
     public function process()
     {
         $users = new UsersModel();
         $username = $this->request->getVar('username');
         $password = $this->request->getVar('password');
+
+        // Mengambil data user berdasarkan username
         $dataUser = $users->where([
             'username' => $username,
         ])->first();
 
         if ($dataUser) {
             if (password_verify($password, $dataUser->password)) {
+
+                // DISINI PERUBAHANNYA
+                // Kita tambahkan 'role' ke dalam session
                 session()->set([
                     'username' => $dataUser->username,
                     'name' => $dataUser->name,
+                    'role' => $dataUser->role,
                     'logged_in' => TRUE
                 ]);
+
                 return redirect()->to(base_url('dashboard'));
             } else {
                 session()->setFlashdata('error', 'Username & Password Salah');
@@ -37,7 +44,7 @@ class Login extends BaseController
             return redirect()->back();
         }
     }
- 
+
     function logout()
     {
         session()->destroy();

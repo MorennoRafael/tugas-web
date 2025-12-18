@@ -43,7 +43,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-10 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+            <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
                 <img src="<?= base_url('img/pkm1.png') ?>" class="col-13 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
             </div>
           </div>
