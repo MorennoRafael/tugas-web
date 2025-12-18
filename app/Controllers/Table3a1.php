@@ -23,6 +23,10 @@ class Table3a1 extends BaseController
 
     public function create()
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table3a1'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $validation = \Config\Services::validation();
         $validation->setRules([
             'nama_prasarana' => 'required',
@@ -55,6 +59,10 @@ class Table3a1 extends BaseController
 
     public function edit($no)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table3a1'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $model = new DBtable3a1();
         $data['table3a1'] = $model->where('no', $no)->first();
 
@@ -89,6 +97,10 @@ class Table3a1 extends BaseController
 
     public function delete($no)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table3a1'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $model = new DBtable3a1();
         $model->delete($no);
         return redirect()->to('table/table3a1');

@@ -24,6 +24,10 @@ class Table2d extends BaseController
 
     public function create()
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2d'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $validation = \Config\Services::validation();
         $validation->setRules([
             'sumber_rekognisi'        => 'required',
@@ -50,6 +54,10 @@ class Table2d extends BaseController
 
     public function edit($no)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2d'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $model = new DBtable2d();
         $data['table2d'] = $model->where('no', $no)->first();
 
@@ -78,6 +86,10 @@ class Table2d extends BaseController
 
     public function delete($no)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2d'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $model = new DBtable2d();
         $model->delete($no);
         return redirect()->to('table/table2d');

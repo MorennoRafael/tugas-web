@@ -2,6 +2,24 @@
 
 <?= $this->section('content') ?>
 
+<?php if (session()->getFlashdata('error')): ?>
+    <div style="position: absolute; top: 2%; right: 2%; z-index: 10500;">
+        <div class="toast fade show p-2 bg-white shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header border-0">
+                <i class="ni ni-notification-70 text-danger me-2"></i>
+                <strong class="me-auto text-danger">Akses Ditolak!</strong>
+                <small class="text-body">Baru saja</small>
+                <button type="button" class="btn-close text-dark" data-bs-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body font-weight-bold">
+                <?= session()->getFlashdata('error'); ?>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
 <main class="main-content position-relative border-radius-lg ">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">

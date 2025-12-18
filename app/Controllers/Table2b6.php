@@ -106,10 +106,6 @@ class Table2b6 extends BaseController
 
     public function exportExcel()
     {
-        if (session()->get('role') == 'staff') {
-            return redirect()->to(base_url('table/table2b6'))->with('error', 'Anda tidak memiliki akses!');
-        }
-
         $model = new DBtable2b6();
         $data = $model->findAll();
 

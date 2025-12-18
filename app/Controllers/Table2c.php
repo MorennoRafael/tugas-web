@@ -9,7 +9,7 @@ use App\Controllers\BaseController;
 // [PENTING] Load Library Excel
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Border;  
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -43,7 +43,7 @@ class Table2c extends BaseController
     public function cari()
     {
         $cariData = $this->request->getGet('search');
-        
+
         $dataRaw = $this->dbTable2c->cariData($cariData);
 
         // Panggil fungsi hitung juga saat mencari
@@ -58,6 +58,10 @@ class Table2c extends BaseController
 
     public function create()
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2c'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $validation = \Config\Services::validation();
         $validation->setRules(['TahunAkademik' => 'required']);
         $isDataValid = $validation->withRequest($this->request)->run();
@@ -79,6 +83,10 @@ class Table2c extends BaseController
 
     public function edit($id)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2c'))->with('error', 'Anda tidak memiliki akses!');
+        }
+
         $data['table2c'] = $this->dbTable2c->where('id', $id)->first();
 
         $validation = \Config\Services::validation();
@@ -101,6 +109,10 @@ class Table2c extends BaseController
 
     public function delete($id)
     {
+        if (session()->get('role') == 'staff') {
+            return redirect()->to(base_url('table/table2c'))->with('error', 'Anda tidak memiliki akses!');
+        }
+        
         $this->dbTable2c->delete($id);
         return redirect()->to('table/table2c');
     }
@@ -108,7 +120,7 @@ class Table2c extends BaseController
     // ==========================================
     // FUNGSI BARU: EXPORT EXCEL
     // ==========================================
-   public function exportExcel()
+    public function exportExcel()
     {
         // 1. Ambil Data & Hitung Ringkasan
         $dataRaw = $this->dbTable2c->findAll();
@@ -155,7 +167,7 @@ class Table2c extends BaseController
                 ],
             ],
         ];
-        
+
         // Terapkan style ke Header (A1:G1)
         $sheet->getStyle('A1:G1')->applyFromArray($headerStyle);
         // Tinggi baris header lebih lega
@@ -197,13 +209,13 @@ class Table2c extends BaseController
         // Kolom A (No), B (Tahun), D, E, F (Angka) -> Center
         $sheet->getStyle('A2:B' . $lastRowData)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         $sheet->getStyle('D2:F' . $lastRowData)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        
+
         // Kolom C (Jenis) dan G (Link) biarkan default (Left)
 
 
         // --- D. BAGIAN RINGKASAN (TOTAL & PERSEN) ---
         $rows++; // Beri jarak 1 baris kosong (Gap)
-        
+
         $startSummary = $rows; // Tandai baris awal summary
 
         // Baris Total
@@ -211,23 +223,23 @@ class Table2c extends BaseController
         $sheet->setCellValue('D' . $rows, $summary['total']['ts_2']);
         $sheet->setCellValue('E' . $rows, $summary['total']['ts_1']);
         $sheet->setCellValue('F' . $rows, $summary['total']['ts']);
-        
+
         // Style text Total
-        $sheet->getStyle('C'.$rows.':F'.$rows)->getFont()->setBold(true);
-        $sheet->getStyle('C'.$rows)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT); // Label "Total" rata kanan
+        $sheet->getStyle('C' . $rows . ':F' . $rows)->getFont()->setBold(true);
+        $sheet->getStyle('C' . $rows)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT); // Label "Total" rata kanan
 
         $rows++; // Pindah ke baris Persen
-        
+
         // Baris Persentase
         $sheet->setCellValue('C' . $rows, 'PERSENTASE (%)');
         $sheet->setCellValue('D' . $rows, $summary['persen']['ts_2'] . '%');
         $sheet->setCellValue('E' . $rows, $summary['persen']['ts_1'] . '%');
         $sheet->setCellValue('F' . $rows, $summary['persen']['ts'] . '%');
-        
+
         // Style text Persen
-        $sheet->getStyle('C'.$rows.':F'.$rows)->getFont()->setBold(true);
-        $sheet->getStyle('C'.$rows.':F'.$rows)->getFont()->getColor()->setARGB(Color::COLOR_BLUE); // Warna Biru
-        $sheet->getStyle('C'.$rows)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT); // Label rata kanan
+        $sheet->getStyle('C' . $rows . ':F' . $rows)->getFont()->setBold(true);
+        $sheet->getStyle('C' . $rows . ':F' . $rows)->getFont()->getColor()->setARGB(Color::COLOR_BLUE); // Warna Biru
+        $sheet->getStyle('C' . $rows)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT); // Label rata kanan
 
         // 3. Terapkan Border Khusus pada kotak Summary (C s/d F)
         $sheet->getStyle('C' . $startSummary . ':F' . $rows)->applyFromArray($styleBorder);
