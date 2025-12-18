@@ -110,4 +110,11 @@ $routes->group('table', function ($routes) {
 	$routes->add('table3a1/(:segment)/edit', 'Table3a1::edit/$1');
 	$routes->get('table3a1/(:segment)/delete', 'Table3a1::delete/$1');
 	$routes->get('table3a1/cari', 'Table3a1::cari');
+
+	// Routes untuk Users
+	$routes->get('users', 'Users::index');
+	$routes->add('users/new', 'Users::create');
+	$routes->get('users/(:segment)/edit', 'Users::edit/$1');
+	$routes->add('users/(:segment)/edit', 'Users::edit/$1');
+	$routes->get('users/(:segment)/delete', 'Users::delete/$1');
 });

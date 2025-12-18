@@ -1,3 +1,9 @@
+<?php
+$segment1 = service('uri')->getSegment(1);
+$segment2 = service('uri')->getSegment(2);
+
+$tablesActive = ($segment1 == 'table');
+?>
 <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
   <div class="sidenav-header">
     <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
@@ -19,19 +25,51 @@
         </a>
       </li>
 
-      <li class="nav-item" id="tablesDropdown">
-        <a class="nav-link" href="#">
+      <li class="nav-item <?= $tablesActive ? 'active' : '' ?>" id="tablesDropdown">
+        <a class="nav-link <?= $tablesActive ? 'active' : '' ?>" href="javascript:void(0);">
           <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
             <i class="ni ni-calendar-grid-58 text-warning text-sm opacity-10"></i>
           </div>
           <span class="nav-link-text ms-1">Tables</span>
           <i class="fas fa-chevron-down ms-auto"></i>
         </a>
-        <ul class="dropdown-menu bg-gray-100" aria-labelledby="tablesDropdown">
-          <li><a class="dropdown-item" href="<?= base_url('table/table2b6') ?>">Tabel 2.b.6</a></li>
-          <li><a class="dropdown-item" href="<?= base_url('table/table2c') ?>">Tabel 2.c</a></li>
-          <li><a class="dropdown-item" href="<?= base_url('table/table2d') ?>">Tabel 2.d</a></li>
-          <li><a class="dropdown-item" href="<?= base_url('table/table3a1') ?>">Tabel 3.a.1</a></li>
+        <ul class="dropdown-menu show bg-gray-100 ms-4">
+
+          <li class="<?= ($segment2 == 'table2b6') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table2b6') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table2b6') ?>">
+              Tabel 2.b.6
+            </a>
+          </li>
+
+          <li class="<?= ($segment2 == 'table2c') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table2c') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table2c') ?>">
+              Tabel 2.c
+            </a>
+          </li>
+
+          <li class="<?= ($segment2 == 'table2d') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table2d') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table2d') ?>">
+              Tabel 2.d
+            </a>
+          </li>
+
+          <li class="<?= ($segment2 == 'table3a1') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'table3a1') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/table3a1') ?>">
+              Tabel 3.a.1
+            </a>
+          </li>
+
+          <li class="<?= ($segment2 == 'users') ? 'bg-dark text-white rounded' : '' ?>">
+            <a class="dropdown-item text-sm <?= ($segment2 == 'users') ? 'text-white' : '' ?>"
+              href="<?= base_url('table/users') ?>">
+              Tabel 3.a.1
+            </a>
+          </li>
+
         </ul>
       </li>
     </ul>
